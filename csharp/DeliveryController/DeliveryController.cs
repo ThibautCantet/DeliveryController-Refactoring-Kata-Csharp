@@ -16,6 +16,13 @@ namespace DeliveryController
             _emailGateway = new EmailGateway();
             _mapService = new MapService();
         }
+
+        public DeliveryController(List<Delivery> deliverySchedule, EmailGateway emailGateway)
+        {
+            DeliverySchedule = deliverySchedule;
+            _emailGateway = emailGateway;
+            _mapService = new MapService();
+        }
         
         public void UpdateDelivery(DeliveryEvent deliveryEvent)
         {

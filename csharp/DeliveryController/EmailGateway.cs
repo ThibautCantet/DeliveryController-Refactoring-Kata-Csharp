@@ -5,7 +5,7 @@ namespace DeliveryController
 {
     public class EmailGateway   
     {
-        public void send(string address, string subject, string message)
+        public virtual void send(string address, string subject, string message)
         {
             var smtpClient = new SmtpClient("localhost")
             {

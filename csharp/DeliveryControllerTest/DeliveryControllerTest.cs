@@ -75,6 +75,27 @@ namespace DeliveryControllerTest
             Assert.Equal(new Location(0f, 0f), spyMapService.Location2);
             Assert.Equal(new TimeSpan(1, 0, 0), spyMapService.ElapsedTime);
         }
+        
+        [Fact]
+        public void Should_send_estimated_time_of_arrival_email_when_not_on_time_and_not_unique_delivery_scheduled_and_not_for_the_first_schedule_delivery_2()
+        {
+            var timeOfDelivery =
+                DateTime.ParseExact($"15/02/2022 13:00", "dd/MM/yyyy HH:mm", CultureInfo.InvariantCulture);
+            List<Delivery> deliverySchedule = new List<Delivery>
+            {
+                BuildDelivery("id", "contact@email.com", $"15/02/2022 12:00", false, false),
+                BuildDelivery("id2", "contact2@email.com", $"15/02/2022 12:00", false, false)
+            };
+            var deliveryController =
+                new DeliveryController.DeliveryController(deliverySchedule, _emailGateway);
+
+            deliveryController.UpdateDelivery(new DeliveryEvent("id", timeOfDelivery, new Location(0, 0)));
+
+            Assert.Contains("Your delivery will arrive soon", ((FakeEmailGateway)_emailGateway).Subjects);
+            Assert.Contains(
+                "Your delivery to DeliveryController.Location is next, estimated time of arrival is in 0 minutes. Be ready!",
+                ((FakeEmailGateway)_emailGateway).Messages);
+        }
 
         private static Delivery BuildDelivery(string id, string email, string time, bool arrived, bool onTime)
         {

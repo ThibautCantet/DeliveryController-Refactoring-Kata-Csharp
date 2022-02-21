@@ -26,12 +26,7 @@ namespace DeliveryControllerTest
         {
             List<Delivery> deliverySchedule = new List<Delivery>()
             {
-                new Delivery("id",
-                    "contact@email.com",
-                    new Location(0f, 0f),
-                    DateTime.Now,
-                    false,
-                    false)
+                BuildDelivery("id", "contact@email.com", $"15/02/2022 12:00", false, false)
             };
             var deliveryController = new DeliveryController.DeliveryController(deliverySchedule, _emailGateway);
 
@@ -47,12 +42,7 @@ namespace DeliveryControllerTest
                 DateTime.ParseExact($"15/02/2022 13:00", "dd/MM/yyyy HH:mm", CultureInfo.InvariantCulture);
             List<Delivery> deliverySchedule = new List<Delivery>
             {
-                new Delivery("id",
-                    "contact@email.com",
-                    new Location(0f, 0f),
-                    timeOfDelivery,
-                    false,
-                    false)
+                BuildDelivery("id", "contact@email.com", $"15/02/2022 12:00", false, false)
             };
             var deliveryController =
                 new DeliveryController.DeliveryController(deliverySchedule, _emailGateway);
@@ -72,27 +62,28 @@ namespace DeliveryControllerTest
                 DateTime.ParseExact($"15/02/2022 13:00", "dd/MM/yyyy HH:mm", CultureInfo.InvariantCulture);
             List<Delivery> deliverySchedule = new List<Delivery>
             {
-                new Delivery("id",
-                    "contact@email.com",
-                    new Location(0f, 0f),
-                    DateTime.ParseExact($"15/02/2022 12:00", "dd/MM/yyyy HH:mm", CultureInfo.InvariantCulture),
-                    false,
-                    false),
-                new Delivery("id2",
-                    "contact2@email.com",
-                    new Location(0f, 0f),
-                    DateTime.ParseExact($"15/02/2022 12:00", "dd/MM/yyyy HH:mm", CultureInfo.InvariantCulture),
-                    false,
-                    false)
+                BuildDelivery("id", "contact@email.com", $"15/02/2022 12:00", false, false),
+                BuildDelivery("id2", "contact2@email.com", $"15/02/2022 12:00", false, false)
             };
             var spyMapService = new SpyMapService();
-            var deliveryController = new DeliveryController.DeliveryController(deliverySchedule, _emailGateway, spyMapService);
+            var deliveryController =
+                new DeliveryController.DeliveryController(deliverySchedule, _emailGateway, spyMapService);
 
             deliveryController.UpdateDelivery(new DeliveryEvent("id2", timeOfDelivery, new Location(0, 0)));
 
-            Assert.Equal(new Location(0f,0f),spyMapService.Location1);
-            Assert.Equal(new Location(0f,0f),spyMapService.Location2);
-            Assert.Equal(new TimeSpan(1, 0, 0),spyMapService.ElapsedTime);
+            Assert.Equal(new Location(0f, 0f), spyMapService.Location1);
+            Assert.Equal(new Location(0f, 0f), spyMapService.Location2);
+            Assert.Equal(new TimeSpan(1, 0, 0), spyMapService.ElapsedTime);
+        }
+
+        private static Delivery BuildDelivery(string id, string email, string time, bool arrived, bool onTime)
+        {
+            return new Delivery(id,
+                email,
+                new Location(0f, 0f),
+                DateTime.ParseExact(time, "dd/MM/yyyy HH:mm", CultureInfo.InvariantCulture),
+                arrived,
+                onTime);
         }
     }
 

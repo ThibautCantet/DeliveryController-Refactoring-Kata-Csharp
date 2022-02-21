@@ -26,7 +26,7 @@ namespace DeliveryControllerTest
         {
             List<Delivery> deliverySchedule = new List<Delivery>()
             {
-                BuildDelivery("id", "contact@email.com", $"15/02/2022 12:00", false, false)
+                BuildDelivery("id", "contact@email.com", "15/02/2022 12:00", false, false)
             };
             var deliveryController = new DeliveryController.DeliveryController(deliverySchedule, _emailGateway);
 
@@ -38,11 +38,10 @@ namespace DeliveryControllerTest
         [Fact]
         public void Should_send_a_feedback_email_when_current_delivery_is_scheduled()
         {
-            var timeOfDelivery =
-                DateTime.ParseExact($"15/02/2022 13:00", "dd/MM/yyyy HH:mm", CultureInfo.InvariantCulture);
+            var timeOfDelivery = BuildTime("15/02/2022 13:00");
             List<Delivery> deliverySchedule = new List<Delivery>
             {
-                BuildDelivery("id", "contact@email.com", $"15/02/2022 12:00", false, false)
+                BuildDelivery("id", "contact@email.com", "15/02/2022 12:00", false, false)
             };
             var deliveryController =
                 new DeliveryController.DeliveryController(deliverySchedule, _emailGateway);
@@ -58,16 +57,14 @@ namespace DeliveryControllerTest
         [Fact]
         public void Should_update_average_speed_when_not_on_time_and_not_unique_delivery_scheduled_and_not_for_the_first_schedule_delivery()
         {
-            var timeOfDelivery =
-                DateTime.ParseExact($"15/02/2022 13:00", "dd/MM/yyyy HH:mm", CultureInfo.InvariantCulture);
+            var timeOfDelivery = BuildTime("15/02/2022 13:00");
             List<Delivery> deliverySchedule = new List<Delivery>
             {
-                BuildDelivery("id", "contact@email.com", $"15/02/2022 12:00", false, false),
-                BuildDelivery("id2", "contact2@email.com", $"15/02/2022 12:00", false, false)
+                BuildDelivery("id", "contact@email.com", "15/02/2022 12:00", false, false),
+                BuildDelivery("id2", "contact2@email.com", "15/02/2022 12:00", false, false)
             };
             var spyMapService = new SpyMapService();
-            var deliveryController =
-                new DeliveryController.DeliveryController(deliverySchedule, _emailGateway, spyMapService);
+            var deliveryController =  new DeliveryController.DeliveryController(deliverySchedule, _emailGateway, spyMapService);
 
             deliveryController.UpdateDelivery(new DeliveryEvent("id2", timeOfDelivery, new Location(0, 0)));
 
@@ -75,16 +72,15 @@ namespace DeliveryControllerTest
             Assert.Equal(new Location(0f, 0f), spyMapService.Location2);
             Assert.Equal(new TimeSpan(1, 0, 0), spyMapService.ElapsedTime);
         }
-        
+
         [Fact]
         public void Should_send_estimated_time_of_arrival_email_when_not_on_time_and_not_unique_delivery_scheduled_and_not_for_the_first_schedule_delivery_2()
         {
-            var timeOfDelivery =
-                DateTime.ParseExact($"15/02/2022 13:00", "dd/MM/yyyy HH:mm", CultureInfo.InvariantCulture);
+            var timeOfDelivery = BuildTime("15/02/2022 13:00");
             List<Delivery> deliverySchedule = new List<Delivery>
             {
-                BuildDelivery("id", "contact@email.com", $"15/02/2022 12:00", false, false),
-                BuildDelivery("id2", "contact2@email.com", $"15/02/2022 12:00", false, false)
+                BuildDelivery("id", "contact@email.com", "15/02/2022 12:00", false, false),
+                BuildDelivery("id2", "contact2@email.com", "15/02/2022 12:00", false, false)
             };
             var deliveryController =
                 new DeliveryController.DeliveryController(deliverySchedule, _emailGateway);
@@ -102,9 +98,14 @@ namespace DeliveryControllerTest
             return new Delivery(id,
                 email,
                 new Location(0f, 0f),
-                DateTime.ParseExact(time, "dd/MM/yyyy HH:mm", CultureInfo.InvariantCulture),
+                BuildTime(time),
                 arrived,
                 onTime);
+        }
+
+        private static DateTime BuildTime(string time)
+        {
+            return DateTime.ParseExact(time, "dd/MM/yyyy HH:mm", CultureInfo.InvariantCulture);
         }
     }
 

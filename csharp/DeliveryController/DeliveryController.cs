@@ -24,6 +24,14 @@ namespace DeliveryController
             _mapService = new MapService();
         }
         
+        
+        public DeliveryController(List<Delivery> deliverySchedule, EmailGateway emailGateway, MapService mapService)
+        {
+            DeliverySchedule = deliverySchedule;
+            _emailGateway = emailGateway;
+            _mapService = mapService;
+        }
+        
         public void UpdateDelivery(DeliveryEvent deliveryEvent)
         {
             Delivery nextDelivery = null;

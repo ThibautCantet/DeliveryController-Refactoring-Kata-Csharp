@@ -13,7 +13,7 @@ namespace DeliveryController
             return distance / this._averageSpeed * MINUTES_PER_HOUR;
         }
 
-        public void UpdateAverageSpeed(Location location1, Location location2, TimeSpan elapsedTime)
+        public virtual void UpdateAverageSpeed(Location location1, Location location2, TimeSpan elapsedTime)
         {
             var distance = this.CalculateDistance(location1, location2);
             var updatedSpeed = distance / (elapsedTime.Seconds / SECONDS_PER_HOUR);

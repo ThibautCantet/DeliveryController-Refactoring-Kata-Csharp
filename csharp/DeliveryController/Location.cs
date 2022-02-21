@@ -10,5 +10,10 @@ namespace DeliveryController
             Latitude = latitude;
             Longitude = longitude;
         }
+
+        public override bool Equals(object? obj)
+        {
+            return ((Location)obj).Latitude == Latitude && ((Location)obj).Longitude == Longitude;
+        }
     }
 }
